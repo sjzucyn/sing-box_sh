@@ -147,7 +147,7 @@ cat << EOF > "$file_path1"
 		    "tag": "国外",
 		    "type": "selector",
 		    "outbounds": [
-		                "include: rack"
+		                "include: rack",
 		                "机场"
 		                        
                                    
