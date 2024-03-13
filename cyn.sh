@@ -1,6 +1,5 @@
 #!/bin/bash
-apt update
-apt install curl -y
+
 apt install nginx -y
 bash <(curl -L -s https://gitlab.com/rwkgyg/acme-script/raw/main/acme.sh)
 my_ip=$(curl -s https://api.ipify.org)
@@ -145,9 +144,9 @@ cat << EOF > "$file_path1"
 		    "tag": "国外",
 		    "type": "selector",
 		    "outbounds": [
-		                       "direct",
-		                       "机场",
-		                         "include: rack"
+		                "include: rack"
+		                "机场"
+		                        
                                    
 		        
 		    ]
