@@ -211,7 +211,7 @@ cat << EOF > "$file_path1"
       },
       {
         "ip_is_private": true,
-        "ip_cidr": ${my_ip}
+        "ip_cidr": \"${my_ip}\",
         "outbound": "direct"
       }
     ],
