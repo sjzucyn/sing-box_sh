@@ -152,8 +152,9 @@ cat << EOF > "$file_path1"
 		                        
                                    
 		        
-		    ]
-		},
+		    ],
+
+"default": "hysteria2-racknerd-ae8723[c.4587flbp.xyz]"		},
 			{
 		    "tag": "机场",
 		    "type": "selector",
