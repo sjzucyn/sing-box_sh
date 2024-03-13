@@ -45,6 +45,9 @@ file_path6="/etc/nginx/nginx.conf"
 echo "请输入您的uuid："
 read my_uuid
 echo "您好，设置uuid为$my_uuid"
+echo "请输入您的节点名称tag："
+read my_pass_id
+echo "您好，设置节点tag为$my_pass_id"
 # 创建文件并写入多行内容
 touch "$file_path1"
 touch "$file_path2"
@@ -154,7 +157,7 @@ cat << EOF > "$file_path1"
 		        
 		    ],
 
-"default": "hysteria2-racknerd-ae8723[c.4587flbp.xyz]"		},
+"default": "hysteria2-$my_pass_id[c.4587flbp.xyz]"		},
 			{
 		    "tag": "机场",
 		    "type": "selector",
@@ -208,6 +211,7 @@ cat << EOF > "$file_path1"
       },
       {
         "ip_is_private": true,
+        "ip_cidr": ${my_ip},
         "outbound": "direct"
       }
     ],
@@ -289,7 +293,7 @@ dns:
       - 240.0.0.0/4
 
 proxies:
-- name: vless-reality-vision-racknerd-ae8723               
+- name: vless-reality-vision-$my_pass_id               
   type: vless
   server: $my_ip                           
   port: 48631                                
@@ -304,7 +308,7 @@ proxies:
     short-id: 4f4dadbc                      
   client-fingerprint: chrome                  
 
-- name: vmess-ws-racknerd-ae8723                         
+- name: vmess-ws-$my_pass_id                         
   type: vmess
   server: $my_ip                        
   port: 2052                                     
@@ -320,7 +324,7 @@ proxies:
     headers:
       Host: www.bing.com                     
 
-- name: hysteria2-racknerd-ae8723                            
+- name: hysteria2-$my_pass_id                            
   type: hysteria2                                      
   server: $my_ip                               
   port: 13129                                
@@ -331,7 +335,7 @@ proxies:
   skip-cert-verify: true
   fast-open: true
 
-- name: tuic5-racknerd-ae8723                            
+- name: tuic5-$my_pass_id                            
   server: $my_ip                      
   port: 59488                                    
   type: tuic
@@ -352,10 +356,10 @@ proxy-groups:
   interval: 300
   strategy: round-robin
   proxies:
-    - vless-reality-vision-racknerd-ae8723                              
-    - vmess-ws-racknerd-ae8723
-    - hysteria2-racknerd-ae8723
-    - tuic5-racknerd-ae8723
+    - vless-reality-vision-$my_pass_id                              
+    - vmess-ws-$my_pass_id
+    - hysteria2-$my_pass_id
+    - tuic5-$my_pass_id
 
 - name: 自动选择
   type: url-test
@@ -363,10 +367,10 @@ proxy-groups:
   interval: 300
   tolerance: 50
   proxies:
-    - vless-reality-vision-racknerd-ae8723                              
-    - vmess-ws-racknerd-ae8723
-    - hysteria2-racknerd-ae8723
-    - tuic5-racknerd-ae8723
+    - vless-reality-vision-$my_pass_id                              
+    - vmess-ws-$my_pass_id
+    - hysteria2-$my_pass_id
+    - tuic5-$my_pass_id
     
 - name: 🌍选择代理节点
   type: select
@@ -374,10 +378,10 @@ proxy-groups:
     - 负载均衡                                         
     - 自动选择
     - DIRECT
-    - vless-reality-vision-racknerd-ae8723                              
-    - vmess-ws-racknerd-ae8723
-    - hysteria2-racknerd-ae8723
-    - tuic5-racknerd-ae8723
+    - vless-reality-vision-$my_pass_id                              
+    - vmess-ws-$my_pass_id
+    - hysteria2-$my_pass_id
+    - tuic5-$my_pass_id
 rules:
   - GEOIP,LAN,DIRECT
   - GEOIP,CN,DIRECT
@@ -487,15 +491,15 @@ cat << EOF > "$file_path3"
       "default": "auto",
       "outbounds": [
         "auto",
-        "vless-racknerd-ae8723",
-        "vmess-racknerd-ae8723",
-        "hy2-racknerd-ae8723",
-        "tuic5-racknerd-ae8723"
+        "vless-$my_pass_id",
+        "vmess-$my_pass_id",
+        "hy2-$my_pass_id",
+        "tuic5-$my_pass_id"
       ]
     },
     {
       "type": "vless",
-      "tag": "vless-racknerd-ae8723",
+      "tag": "vless-$my_pass_id",
       "server": "$my_ip",
       "server_port": 48631,
       "uuid": "$my_uuid",
@@ -518,7 +522,7 @@ cat << EOF > "$file_path3"
 {
             "server": "$my_ip",
             "server_port": 2052,
-            "tag": "vmess-racknerd-ae8723",
+            "tag": "vmess-$my_pass_id",
             "tls": {
                 "enabled": false,
                 "server_name": "www.bing.com",
@@ -545,7 +549,7 @@ cat << EOF > "$file_path3"
 
     {
         "type": "hysteria2",
-        "tag": "hy2-racknerd-ae8723",
+        "tag": "hy2-$my_pass_id",
         "server": "$my_ip",
         "server_port": 13129,
         "password": "$my_uuid",
@@ -560,7 +564,7 @@ cat << EOF > "$file_path3"
     },
         {
             "type":"tuic",
-            "tag": "tuic5-racknerd-ae8723",
+            "tag": "tuic5-$my_pass_id",
             "server": "$my_ip",
             "server_port": 59488,
             "uuid": "$my_uuid",
@@ -595,10 +599,10 @@ cat << EOF > "$file_path3"
       "tag": "auto",
       "type": "urltest",
       "outbounds": [
-        "vless-racknerd-ae8723",
-        "vmess-racknerd-ae8723",
-        "hy2-racknerd-ae8723",
-        "tuic5-racknerd-ae8723"
+        "vless-$my_pass_id",
+        "vmess-$my_pass_id",
+        "hy2-$my_pass_id",
+        "tuic5-$my_pass_id"
       ],
       "url": "https://www.gstatic.com/generate_204",
       "interval": "1m",
