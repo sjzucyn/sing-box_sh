@@ -4,11 +4,11 @@ htmlid=$(curl -X PUT 'http://127.0.0.1:8080/put' -H 'User-Agent: Mozilla/5.0 (Li
   "Include": "",
   "Exclude": "",
   "Config": "",
-  "ConfigUrl": "http://127.0.0.1/ddas/muban.json",
+  "ConfigUrl": "https://127.0.0.1/ddas/muban.json",
   "AddTag": true,
   "DisableUrlTest": true
 }')
 
-echo "http://127.0.0.1:10010/sub?id=${htmlid}"
+echo "http://127.0.0.1:8080/sub?id=${htmlid}"
 
-curl -X GET "http://127.0.0.1:10010/sub?id=${htmlid}" -H 'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Mobile Safari/537.36' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7' -H 'Accept-Encoding: gzip, deflate, br, zstd' -H 'Cache-Control: max-age=0' -H 'sec-ch-ua: "Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"' -H 'sec-ch-ua-mobile: ?1' -H 'sec-ch-ua-platform: "Android"' -H 'Upgrade-Insecure-Requests: 1' -H 'Sec-Fetch-Site: none' -H 'Sec-Fetch-Mode: navigate' -H 'Sec-Fetch-User: ?1' -H 'Sec-Fetch-Dest: document' -H 'Accept-Language: zh-CN,zh;q=0.9,en;q=0.8' -o /etc/sing-box/new.json
+curl -X GET "http://127.0.0.1:8080/sub?id=${htmlid}" -H 'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Mobile Safari/537.36' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7' -H 'Accept-Encoding: gzip, deflate, br, zstd' -H 'Cache-Control: max-age=0' -H 'sec-ch-ua: "Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"' -H 'sec-ch-ua-mobile: ?1' -H 'sec-ch-ua-platform: "Android"' -H 'Upgrade-Insecure-Requests: 1' -H 'Sec-Fetch-Site: none' -H 'Sec-Fetch-Mode: navigate' -H 'Sec-Fetch-User: ?1' -H 'Sec-Fetch-Dest: document' -H 'Accept-Language: zh-CN,zh;q=0.9,en;q=0.8' -o /etc/sing-box/new.json
