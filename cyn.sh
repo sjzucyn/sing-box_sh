@@ -930,4 +930,4 @@ EOF
 echo "$file_path6"
 systemctl start sing-box.service
 
-systemctl restart nginx.service
+nginx -s reload
