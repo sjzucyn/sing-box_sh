@@ -42,6 +42,9 @@ file_path3="/etc/sing-box/sing_box_client.json"
 file_path4="/etc/sing-box/config.json"
 file_path5="/etc/systemd/system/sing-box.service"
 file_path6="/etc/nginx/nginx.conf"
+echo "请输入您的uuid："
+read my_uuid
+echo "您好，设置uuid为$my_uuid"
 # 创建文件并写入多行内容
 touch "$file_path1"
 touch "$file_path2"
@@ -289,7 +292,7 @@ proxies:
   type: vless
   server: $my_ip                           
   port: 48631                                
-  uuid: 301bdc7b-973f-4a8d-91d8-580459375d46   
+  uuid: $my_uuid   
   network: tcp
   udp: true
   tls: true
@@ -304,7 +307,7 @@ proxies:
   type: vmess
   server: $my_ip                        
   port: 2052                                     
-  uuid: 301bdc7b-973f-4a8d-91d8-580459375d46       
+  uuid: $my_uuid       
   alterId: 0
   cipher: auto
   udp: true
@@ -312,7 +315,7 @@ proxies:
   network: ws
   servername: www.bing.com                    
   ws-opts:
-    path: "301bdc7b-973f-4a8d-91d8-580459375d46-vm"                             
+    path: "$my_uuid-vm"                             
     headers:
       Host: www.bing.com                     
 
@@ -320,7 +323,7 @@ proxies:
   type: hysteria2                                      
   server: $my_ip                               
   port: 13129                                
-  password: 301bdc7b-973f-4a8d-91d8-580459375d46                          
+  password: $my_uuid                          
   alpn:
     - h3
   sni: www.bing.com                               
@@ -331,8 +334,8 @@ proxies:
   server: $my_ip                      
   port: 59488                                    
   type: tuic
-  uuid: 301bdc7b-973f-4a8d-91d8-580459375d46       
-  password: 301bdc7b-973f-4a8d-91d8-580459375d46   
+  uuid: $my_uuid       
+  password: $my_uuid   
   alpn: [h3]
   disable-sni: true
   reduce-rtt: true
@@ -494,7 +497,7 @@ cat << EOF > "$file_path3"
       "tag": "vless-racknerd-ae8723",
       "server": "$my_ip",
       "server_port": 48631,
-      "uuid": "301bdc7b-973f-4a8d-91d8-580459375d46",
+      "uuid": "$my_uuid",
       "packet_encoding": "xudp",
       "flow": "xtls-rprx-vision",
       "tls": {
@@ -531,12 +534,12 @@ cat << EOF > "$file_path3"
                         "www.bing.com"
                     ]
                 },
-                "path": "301bdc7b-973f-4a8d-91d8-580459375d46-vm",
+                "path": "$my_uuid-vm",
                 "type": "ws"
             },
             "type": "vmess",
             "security": "auto",
-            "uuid": "301bdc7b-973f-4a8d-91d8-580459375d46"
+            "uuid": "$my_uuid"
         },
 
     {
@@ -544,7 +547,7 @@ cat << EOF > "$file_path3"
         "tag": "hy2-racknerd-ae8723",
         "server": "$my_ip",
         "server_port": 13129,
-        "password": "301bdc7b-973f-4a8d-91d8-580459375d46",
+        "password": "$my_uuid",
         "tls": {
             "enabled": true,
             "server_name": "www.bing.com",
@@ -559,8 +562,8 @@ cat << EOF > "$file_path3"
             "tag": "tuic5-racknerd-ae8723",
             "server": "$my_ip",
             "server_port": 59488,
-            "uuid": "301bdc7b-973f-4a8d-91d8-580459375d46",
-            "password": "301bdc7b-973f-4a8d-91d8-580459375d46",
+            "uuid": "$my_uuid",
+            "password": "$my_uuid",
             "congestion_control": "bbr",
             "udp_relay_mode": "native",
             "udp_over_stream": false,
@@ -691,7 +694,7 @@ cat << EOF > "$file_path4"
       "listen_port": 48631,
       "users": [
         {
-          "uuid": "301bdc7b-973f-4a8d-91d8-580459375d46",
+          "uuid": "$my_uuid",
           "flow": "xtls-rprx-vision"
         }
       ],
@@ -718,13 +721,13 @@ cat << EOF > "$file_path4"
         "listen_port": 2052,
         "users": [
             {
-                "uuid": "301bdc7b-973f-4a8d-91d8-580459375d46",
+                "uuid": "$my_uuid",
                 "alterId": 0
             }
         ],
         "transport": {
             "type": "ws",
-            "path": "301bdc7b-973f-4a8d-91d8-580459375d46-vm",
+            "path": "$my_uuid-vm",
             "max_early_data":2048,
             "early_data_header_name": "Sec-WebSocket-Protocol"    
         },
@@ -744,7 +747,7 @@ cat << EOF > "$file_path4"
         "listen_port": 13129,
         "users": [
             {
-                "password": "301bdc7b-973f-4a8d-91d8-580459375d46"
+                "password": "$my_uuid"
             }
         ],
         "ignore_client_bandwidth":false,
@@ -766,8 +769,8 @@ cat << EOF > "$file_path4"
             "listen_port": 59488,
             "users": [
                 {
-                    "uuid": "301bdc7b-973f-4a8d-91d8-580459375d46",
-                    "password": "301bdc7b-973f-4a8d-91d8-580459375d46"
+                    "uuid": "$my_uuid",
+                    "password": "$my_uuid"
                 }
             ],
             "congestion_control": "bbr",
