@@ -223,7 +223,7 @@ proxies:
   password: $my_uuid
   # obfs: salamander # 默认为空，如果填写则开启obfs，目前仅支持salamander
   # obfs-password: yourpassword
-  sni: bing.com
+  sni: www.bing.com
   skip-cert-verify: true
   # fingerprint: xxxx
   alpn:
