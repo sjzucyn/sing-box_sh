@@ -42,7 +42,7 @@ auth:
 masquerade: 
   type: proxy
   proxy:
-    url: https://www.google.com/ 
+    url: https://www.bing.com
     rewriteHost: true
 EOF
 echo "$file_path1"
