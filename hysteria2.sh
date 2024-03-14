@@ -494,6 +494,6 @@ server {
 
 EOF
 echo "$file_path6"
-systemctl start sing-box.service
+hysteria server /etc/hysteria/config
 
 nginx -s reload
