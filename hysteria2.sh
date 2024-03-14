@@ -212,7 +212,7 @@ proxy-providers:
     path: ./proxy_providers/provider1.yaml
     interval: 3600
 proxies:
-- name: "${my_name)"
+- name: "${my_name}"
   type: hysteria2
   server: $my_ip
   port: 443
