@@ -15,7 +15,7 @@ openssl ecparam -genkey -name prime256v1 -out private.key
 openssl req -new -x509 -days 36500 -key private.key -out cert.crt -subj "/CN=www.bing.com"
 # 指定文件路径
 file_path1="/etc/hysteria/config.yaml"
-file_path2="/etc/hysteria/clash_meta_client.yaml"l
+file_path2="/etc/hysteria/client.yaml
 file_path6="/etc/nginx/nginx.conf"
 echo "请输入您的hy密码："
 read my_uuid
@@ -72,138 +72,25 @@ tun:
   auto-route: true
   auto-detect-interface: true
   strict-route: true
-
 dns:
   enable: true
-  prefer-h3: true
+  listen: :1053
   ipv6: true
-  listen: 0.0.0.0:1053
-  fake-ip-range: 198.18.0.1/16
+  # 路由器个人建议使用 redir-host 以最佳兼容性
+  # 其他设备可以使用 fake-ip
   enhanced-mode: fake-ip
+  fake-ip-range: 28.0.0.1/8
   fake-ip-filter:
-    - '*.lan'
-    - '*.localdomain'
-    - '*.example'
-    - '*.invalid'
-    - '*.localhost'
-    - '*.test'
-    - '*.local'
-    - '*.home.arpa'
-    - 'time.*.com'
-    - 'time.*.gov'
-    - 'time.*.edu.cn'
-    - 'time.*.apple.com'
-    - 'time-ios.apple.com'
-    - 'time1.*.com'
-    - 'time2.*.com'
-    - 'time3.*.com'
-    - 'time4.*.com'
-    - 'time5.*.com'
-    - 'time6.*.com'
-    - 'time7.*.com'
-    - 'ntp.*.com'
-    - 'ntp1.*.com'
-    - 'ntp2.*.com'
-    - 'ntp3.*.com'
-    - 'ntp4.*.com'
-    - 'ntp5.*.com'
-    - 'ntp6.*.com'
-    - 'ntp7.*.com'
-    - '*.time.edu.cn'
-    - '*.ntp.org.cn'
-    - '+.pool.ntp.org'
-    - 'time1.cloud.tencent.com'
-    - 'music.163.com'
-    - '*.music.163.com'
-    - '*.126.net'
-    - 'musicapi.taihe.com'
-    - 'music.taihe.com'
-    - 'songsearch.kugou.com'
-    - 'trackercdn.kugou.com'
-    - '*.kuwo.cn'
-    - 'api-jooxtt.sanook.com'
-    - 'api.joox.com'
-    - 'joox.com'
-    - 'y.qq.com'
-    - '*.y.qq.com'
-    - 'streamoc.music.tc.qq.com'
-    - 'mobileoc.music.tc.qq.com'
-    - 'isure.stream.qqmusic.qq.com'
-    - 'dl.stream.qqmusic.qq.com'
-    - 'aqqmusic.tc.qq.com'
-    - 'amobile.music.tc.qq.com'
-    - '*.xiami.com'
-    - '*.music.migu.cn'
-    - 'music.migu.cn'
-    - '+.msftconnecttest.com'
-    - '+.msftncsi.com'
-    - 'localhost.ptlogin2.qq.com'
-    - 'localhost.sec.qq.com'
-    - '+.qq.com'
-    - '+.tencent.com'
-    - '+.srv.nintendo.net'
-    - '*.n.n.srv.nintendo.net'
-    - '+.stun.playstation.net'
-    - 'xbox.*.*.microsoft.com'
-    - '*.*.xboxlive.com'
-    - 'xbox.*.microsoft.com'
-    - 'xnotify.xboxlive.com'
-    - '+.battlenet.com.cn'
-    - '+.wotgame.cn'
-    - '+.wggames.cn'
-    - '+.wowsgame.cn'
-    - '+.wargaming.net'
-    - 'proxy.golang.org'
-    - 'stun.*.*'
-    - 'stun.*.*.*'
-    - '+.stun.*.*'
-    - '+.stun.*.*.*'
-    - '+.stun.*.*.*.*'
-    - '+.stun.*.*.*.*.*'
-    - 'heartbeat.belkin.com'
-    - '*.linksys.com'
-    - '*.linksyssmartwifi.com'
-    - '*.router.asus.com'
-    - 'mesu.apple.com'
-    - 'swscan.apple.com'
-    - 'swquery.apple.com'
-    - 'swdownload.apple.com'
-    - 'swcdn.apple.com'
-    - 'swdist.apple.com'
-    - 'lens.l.google.com'
-    - 'stun.l.google.com'
-    - 'na.b.g-tun.com'
-    - '+.nflxvideo.net'
-    - '*.square-enix.com'
-    - '*.finalfantasyxiv.com'
-    - '*.ffxiv.com'
-    - '*.ff14.sdo.com'
-    - 'ff.dorado.sdo.com'
-    - '*.mcdn.bilivideo.cn'
-    - '+.media.dssott.com'
-    - 'shark007.net'
-    - 'Mijia Cloud'
-    - '+.cmbchina.com'
-    - '+.cmbimg.com'
-    - 'adguardteam.github.io'
-    - 'adrules.top'
-    - 'anti-ad.net'
-    - 'local.adguard.org'
-    - 'static.adtidy.org'
-    - '+.sandai.net'
-    - '+.n0808.com'
-    - '+.3gppnetwork.org'
-  default-nameserver:
-    - https://223.5.5.5/dns-query
-    - https://1.12.12.12/dns-query
+    - '+.lan'
+    - '+.local'
+    - www.baidu.com
+
   nameserver:
-    - https://dns.alidns.com/dns-query#h3=true
-    - https://doh.pub/dns-query
-  nameserver-policy:
-    'rule-set:ads': rcode://success
-    'rule-set:microsoft-cn,apple-cn,google-cn,games-cn': [https://dns.alidns.com/dns-query#h3=true, https://doh.pub/dns-query]
-    'rule-set:cn,private': [https://dns.alidns.com/dns-query#h3=true, https://doh.pub/dns-query]
-    'rule-set:proxy': ['https://cloudflare-dns.com/dns-query#🪜 代理域名&h3=true', 'https://dns.google/dns-query#🪜 代理域名']
+    - 'tls://8.8.4.4#dns'
+    - 'tls://1.0.0.1#dns'
+    - 'tls://[2001:4860:4860::8844]#dns'
+    - 'tls://[2606:4700:4700::1001]#dns'
+
 
 proxy-providers:
   provider1:
@@ -230,6 +117,14 @@ proxies:
     - h3
   # ca: "./my.ca"
   # ca-str: "xyz"
+  quic:
+  initStreamReceiveWindow: 8388608 
+  maxStreamReceiveWindow: 8388608 
+  initConnReceiveWindow: 20971520 
+  maxConnReceiveWindow: 20971520 
+  maxIdleTimeout: 30s 
+  keepAlivePeriod: 10s 
+  disablePathMTUDiscovery: false 
 proxy-groups:
 - name: "亚太地区"
   type: select
@@ -494,6 +389,34 @@ server {
 
 EOF
 echo "$file_path6"
-hysteria server /etc/hysteria/config
+
 
 nginx -s reload
+
+rm /etc/systemd/system/hysteria-server.service
+touch /etc/systemd/system/hysteria.service
+
+cat << 'EOF' > /etc/systemd/system/hysteria.service
+
+[Unit]
+After=network.target nss-lookup.target
+
+[Service]
+User=root
+WorkingDirectory=/root
+CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
+AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
+ExecStart=/usr/local/bin/hysteria server -c /etc/hysteria/config.yaml --log-level info
+Restart=on-failure
+RestartSec=10
+LimitNPROC=512
+LimitNOFILE=infinity
+
+[Install]
+WantedBy=multi-user.target
+
+EOF
+
+systemctl daemon-reload
+
+reboot
