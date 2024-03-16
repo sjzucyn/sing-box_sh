@@ -519,7 +519,7 @@ cat << EOF > "$file_path3"
     },
 {
             "server": "$my_ip",
-            "server_port": 2052,
+            "server_port": 80,
             "tag": "vmess-$my_pass_id",
             "tls": {
                 "enabled": false,
@@ -534,7 +534,7 @@ cat << EOF > "$file_path3"
             "transport": {
                 "headers": {
                     "Host": [
-                        "www.bing.com"
+                        "pull.free.video.10010.com"
                     ]
                 },
                 "path": "$my_uuid-vm",
@@ -721,7 +721,7 @@ cat << EOF > "$file_path4"
         "sniff_override_destination": true,
         "tag": "vmess-sb",
         "listen": "::",
-        "listen_port": 2052,
+        "listen_port": 80,
         "users": [
             {
                 "uuid": "$my_uuid",
