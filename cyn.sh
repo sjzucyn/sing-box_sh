@@ -1,7 +1,9 @@
 #!/bin/bash
 
 apt install nginx -y
-bash <(curl -L -s https://gitlab.com/rwkgyg/acme-script/raw/main/acme.sh)
+curl -fsSL https://get.docker.com | bash -s docker
+docker volume create clash2sfa    
+docker run -d -p 8080:8080 -v clash2sfa:/server/db ghcr.io/xmdhs/clash2sfabash <(curl -L -s https://gitlab.com/rwkgyg/acme-script/raw/main/acme.sh)
 my_ip=$(curl -s https://api.ipify.org)
 
 
