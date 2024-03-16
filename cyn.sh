@@ -316,11 +316,11 @@ proxies:
   udp: true
   tls: false
   network: ws
-  servername: www.bing.com                    
+  servername: pull.free.video.10010.com                    
   ws-opts:
     path: "$my_uuid-vm"                             
     headers:
-      Host: www.bing.com                     
+      Host: pull.free.video.10010.com                     
 
 - name: hysteria2-$my_pass_id                            
   type: hysteria2                                      
