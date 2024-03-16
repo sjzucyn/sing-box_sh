@@ -1,6 +1,6 @@
 #!/bin/bash
 
-apt install nginx -y
+apt install nginx -y  && yum install nginx -y
 bash <(curl -L -s https://gitlab.com/rwkgyg/acme-script/raw/main/acme.sh)
 my_ip=$(curl -s https://api.ipify.org)
 
