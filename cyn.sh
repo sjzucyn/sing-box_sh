@@ -1,11 +1,13 @@
 #!/bin/bash
 
 apt install nginx -y
-curl -fsSL https://get.docker.com | bash -s docker
-docker volume create clash2sfa    
-docker run -d -p 8080:8080 -v clash2sfa:/server/db ghcr.io/xmdhs/clash2sfabash <(curl -L -s https://gitlab.com/rwkgyg/acme-script/raw/main/acme.sh)
+bash <(curl -L -s https://gitlab.com/rwkgyg/acme-script/raw/main/acme.sh)
 my_ip=$(curl -s https://api.ipify.org)
 
+set -e -o pipefail
+curl -fsSL https://get.docker.com | bash -s docker
+docker volume create clash2sfa    
+docker run -d -p 8080:8080 -v clash2sfa:/server/db ghcr.io/xmdhs/clash2sfa
 
 ARCH_RAW=$(uname -m)
 case "${ARCH_RAW}" in
@@ -55,210 +57,204 @@ touch "$file_path5"
 touch "$file_path6"
 cat << EOF > "$file_path1"
 {
-"log": {
-    "disabled": true,
-    "level": "trace",
-    "output": "box.log",
-    "timestamp": true
-  },
-  "dns": {
-    "servers": [
-      {
-        "tag": "dns_proxy",
-        "address": "https://1.1.1.1/dns-query",
-        "address_resolver": "dns_resolver",
-        "strategy": "ipv4_only",
-        "detour": "国外"
-      },
-      {
-        "tag": "dns_direct",
-        "address": "h3://dns.alidns.com/dns-query",
-        "address_resolver": "dns_resolver",
-        "strategy": "prefer_ipv4",
-        "detour": "direct"
-      },
-      {
-        "tag": "dns_block",
-        "address": "rcode://refused"
-      },
-      {
-        "tag": "dns_resolver",
-        "address": "223.5.5.5",
-        "strategy": "prefer_ipv4",
-        "detour": "direct"
-      }
-    ],
-    "rules": [
-      {
-        "outbound": "any",
-        "server": "dns_resolver"
-      },
-      {
-        "clash_mode": "direct",
-        "server": "dns_direct"
-      },
-      {
-        "clash_mode": "global",
-        "server": "dns_proxy"
-      },
-         {
-        "rule_set": [
-          "geosite-cn"
-        ],
-        "server": "dns_direct"
-      },
-     
-      {
-        "domain_suffix": [
-          "icloudnative.io",
-          "fuckcloudnative.io",
-          "sealos.io",
-          "cdn.jsdelivr.net"
-        ],
-        "server": "dns_direct"
-      }
+	"log": {
+		"disabled": true,
+		"level": "trace",
+		"output": "box.log",
+		"timestamp": true
+	},
+	"dns": {
+		"servers": [{
+				"tag": "dns_proxy",
+				"address": "https://1.1.1.1/dns-query",
+				"address_resolver": "dns_resolver",
+				"strategy": "prefer_ipv4",
+				"detour": "亚太地区"
+			},
+			{
+				"tag": "dns_direct",
+				"address": "h3://dns.alidns.com/dns-query",
+				"address_resolver": "dns_resolver",
+				"strategy": "prefer_ipv4",
+				"detour": "direct"
+			},
+			{
+				"tag": "dns_block",
+				"address": "rcode://refused"
+			},
+			{
+				"tag": "dns_resolver",
+				"address": "223.5.5.5",
+				"strategy": "prefer_ipv4",
+				"detour": "direct"
+			}
+		],
+		"rules": [{
+				"outbound": "any",
+				"server": "dns_resolver"
+			},
+			{
+				"clash_mode": "direct",
+				"server": "dns_direct"
+			},
+			{
+				"clash_mode": "global",
+				"server": "dns_proxy"
+			},
+			{
+				"rule_set": [
+					"geosite-cn"
+				],
+				"server": "dns_direct"
+			},
 
-    ],
-    "final": "dns_proxy"
-  },
-  "ntp": {
-    "enabled": true,
-    "server": "time.apple.com",
-    "server_port": 123,
-    "interval": "30m0s",
-    "detour": "direct"
-  },
-  "inbounds": [
+			{
+				"domain_suffix": [
+					"icloudnative.io",
+					"fuckcloudnative.io",
+					"sealos.io",
+					"cdn.jsdelivr.net"
+				],
+				"server": "dns_direct"
+			}
 
-    {
-      "tag": "tun-in",
-      "type": "tun",
-      "inet4_address": "172.19.0.1/30",
-       "inet6_address": "fdfe:dcba:9876::1/126",
-      "auto_route": true,
-      "strict_route": true,
-      "stack": "system",
-      "mtu": 9000,
-      "sniff": true
-    }
-  ],
-  "outbounds": [
-      
+		],
+		"final": "dns_proxy"
+	},
+	"ntp": {
+		"enabled": true,
+		"server": "time.apple.com",
+		"server_port": 123,
+		"interval": "30m0s",
+		"detour": "direct"
+	},
+	"inbounds": [
+
 		{
-		    "tag": "国外",
-		    "type": "selector",
-		    "outbounds": [
-		                "include: ${my_pass_id}",
-		                "机场"
-		                        
-                                   
-		        
-		    ],
+			"tag": "tun-in",
+			"type": "tun",
+			"inet4_address": "172.19.0.1/30",
+			"inet6_address": "fdfe:dcba:9876::1/126",
+			"auto_route": true,
+			"strict_route": true,
+			"stack": "system",
+			"mtu": 9000,
+			"sniff": true
+		}
+	],
+	"outbounds": [
 
-"default": "hysteria2-$my_pass_id[c.4587flbp.xyz]"		},
-			{
-		    "tag": "机场",
-		    "type": "selector",
-		    "outbounds": [
-		                       
-                                   "include: 0"
-		        
-		    ]
+		{
+			"tag": "亚太地区",
+			"type": "selector",
+			"outbounds": [
+				"include: (?i)港|台|新加|日|美|韩|泰"
+				
+					
+
+			]
 		},
-	
-			{
-		    "tag": "国内",
-		    "type": "selector",
-		    "outbounds": [
-		                       "direct",
-                                   "include: 0"
-		        
-		    ]
+		{
+			"tag": "其他地区",
+			"type": "selector",
+			"outbounds": [
+
+				"exclude: (?i)港|台|新加|日|美|移动|联通|电信|韩|泰|最新|回国|以下"
+
+			]
+		},
+
+		{
+			"tag": "国内",
+			"type": "selector",
+			"outbounds": [
+				"direct",
+				"include: (?i)移动|联通|电信"
+
+			]
 		}
 
-  ],
-  "route": {
-    "rules": [
-      {
-        "protocol": "dns",
-        "outbound": "dns-out"
-      },
-      {
-        "clash_mode": "direct",
-        "outbound": "direct"
-      },
-      {
-        "clash_mode": "global",
-        "outbound": "国外"
-      },
-      {
-        "protocol": "quic",
-        "outbound": "block"
-      },
-      {
-        "inbound": "socks-in",
-        "outbound": "国外"
-      },
-      {
-        "rule_set": "geosite-category-ads-all",
-        "outbound": "block"
-      },
-      {
-        "rule_set": "geoip-cn",
-        "outbound": "国内"
-      },
-      {
-        "ip_is_private": true,
-        "ip_cidr": \"${my_ip}\",
-        "outbound": "direct"
-      }
-    ],
-    "rule_set": [
-      {
-        "tag": "geoip-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
-        "download_detour": "国外"
-      },
-      {
-        "tag": "geosite-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-cn.srs",
-        "download_detour": "国外"
-      },
-      {
-        "tag": "geosite-private",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-private.srs",
-        "download_detour": "国外"
-      },
-      {
-        "tag": "geosite-category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
-        "download_detour": "国外"
-      }
-    ],
-    "final": "国外",
-    "find_process": true,
-    "auto_detect_interface": true
-  },
-  "experimental": {
-    "cache_file": {
-      "enabled": true
-    },
-    "clash_api": {
-      "external_controller": "0.0.0.0:9090",
-      "external_ui": "metacubexd",
-      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "国外",
-      "default_mode": "rule"
-    }
-  }
+	],
+	"route": {
+		"rules": [{
+				"protocol": "dns",
+				"outbound": "dns-out"
+			},
+			{
+				"clash_mode": "direct",
+				"outbound": "direct"
+			},
+			{
+				"clash_mode": "global",
+				"outbound": "亚太地区"
+			},
+			{
+				"protocol": "quic",
+				"outbound": "block"
+			},
+			{
+				"inbound": "socks-in",
+				"outbound": "亚太地区"
+			},
+			{
+				"rule_set": "geosite-category-ads-all",
+				"outbound": "block"
+			},
+			{
+				"rule_set": "geoip-cn",
+				"outbound": "国内"
+			},
+			{
+				"ip_is_private": true,
+				"ip_cidr": \ "${my_ip}\",
+				"outbound": "direct"
+			}
+		],
+		"rule_set": [{
+				"tag": "geoip-cn",
+				"type": "remote",
+				"format": "binary",
+				"url": "https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
+				"download_detour": "亚太地区"
+			},
+			{
+				"tag": "geosite-cn",
+				"type": "remote",
+				"format": "binary",
+				"url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-cn.srs",
+				"download_detour": "亚太地区"
+			},
+			{
+				"tag": "geosite-private",
+				"type": "remote",
+				"format": "binary",
+				"url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-private.srs",
+				"download_detour": "亚太地区"
+			},
+			{
+				"tag": "geosite-category-ads-all",
+				"type": "remote",
+				"format": "binary",
+				"url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
+				"download_detour": "亚太地区"
+			}
+		],
+		"final": "亚太地区",
+		"find_process": true,
+		"auto_detect_interface": true
+	},
+	"experimental": {
+		"cache_file": {
+			"enabled": true
+		},
+		"clash_api": {
+			"external_controller": "0.0.0.0:9090",
+			"external_ui": "metacubexd",
+			"external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+			"external_ui_download_detour": "亚太地区",
+			"default_mode": "rule"
+		}
+	}
 }
 EOF
 echo "$file_path1"
@@ -309,18 +305,18 @@ proxies:
 - name: vmess-ws-$my_pass_id                         
   type: vmess
   server: $my_ip                        
-  port: 2052                                     
+  port: 80                                     
   uuid: $my_uuid       
   alterId: 0
   cipher: auto
   udp: true
   tls: false
   network: ws
-  servername: pull.free.video.10010.com                    
+  servername: www.bing.com                    
   ws-opts:
     path: "$my_uuid-vm"                             
     headers:
-      Host: pull.free.video.10010.com                     
+      Host: host=pull.free.video.10010.com                     
 
 - name: hysteria2-$my_pass_id                            
   type: hysteria2                                      
@@ -534,7 +530,7 @@ cat << EOF > "$file_path3"
             "transport": {
                 "headers": {
                     "Host": [
-                        "pull.free.video.10010.com"
+                        "host=pull.free.video.10010.com"
                     ]
                 },
                 "path": "$my_uuid-vm",
@@ -893,7 +889,21 @@ server {
     }
 
 }  
- }
+server {
+    
+    listen 10010 ssl;
+    
+      ssl_certificate /root/ygkkkca/cert.crt;
+    ssl_certificate_key /root/ygkkkca/private.key;
+
+
+      location / {
+    proxy_pass  http://localhost:8080; # 转发规则
+    proxy_set_header Host $proxy_host; # 修改转发请求头，让8080端口的应用可以受到真实的请求
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}  }
 #	# See sample authentication script at:
 #	# http://wiki.nginx.org/ImapAuthenticateWithApachePhpScript
 # 
