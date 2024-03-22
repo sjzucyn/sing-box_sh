@@ -56,205 +56,199 @@ touch "$file_path4"
 touch "$file_path5"
 touch "$file_path6"
 cat << EOF > "$file_path1"
-{
-	"log": {
-		"disabled": true,
-		"level": "trace",
-		"output": "box.log",
-		"timestamp": true
-	},
-	"dns": {
-		"servers": [{
-				"tag": "dns_proxy",
-				"address": "https://1.1.1.1/dns-query",
-				"address_resolver": "dns_resolver",
-				"strategy": "prefer_ipv4",
-				"detour": "亚太地区"
-			},
-			{
-				"tag": "dns_direct",
-				"address": "h3://dns.alidns.com/dns-query",
-				"address_resolver": "dns_resolver",
-				"strategy": "prefer_ipv4",
-				"detour": "direct"
-			},
-			{
-				"tag": "dns_block",
-				"address": "rcode://refused"
-			},
-			{
-				"tag": "dns_resolver",
-				"address": "223.5.5.5",
-				"strategy": "prefer_ipv4",
-				"detour": "direct"
-			}
-		],
-		"rules": [{
-				"outbound": "any",
-				"server": "dns_resolver"
-			},
-			{
-				"clash_mode": "direct",
-				"server": "dns_direct"
-			},
-			{
-				"clash_mode": "global",
-				"server": "dns_proxy"
-			},
-			{
-				"rule_set": [
-					"geosite-cn"
-				],
-				"server": "dns_direct"
-			},
+  {
+    "log": { "level": "error", "timestamp": true },
+  "dns": {
+    "servers": [
+      { "tag": "dns_block", "address": "rcode://success" },
+      { "tag": "dns_direct", "address": "h3://dns.alidns.com/dns-query", "address_resolver": "dns_ip", "detour": "direct" },
+      { "tag": "dns_ip", "address": "https://223.5.5.5/dns-query", "detour": "direct" },
+      { "tag": "dns_fakeip", "address": "fakeip" }
+    ],
+    "rules": [
+      { "outbound": "any", "server": "dns_ip" },
+      { "clash_mode": "Direct", "server": "dns_direct" },
+      { "clash_mode": "Global", "server": "dns_fakeip", "rewrite_ttl": 1 },
+      { "rule_set": [ "ads" ], "server": "dns_block" },
+      { "rule_set": [ "microsoft-cn", "apple-cn", "google-cn", "games-cn", "cn", "private" ], "query_type": [ "A", "AAAA" ], "server": "dns_ip" },
+      { "rule_set": [ "proxy"], "query_type": [ "A", "AAAA" ], "server": "dns_fakeip", "rewrite_ttl": 1 },
+       { "domain_suffix": [ "ipleak.net","surfsharkdns.com"],"query_type": [ "A", "AAAA" ], "server": "dns_fakeip", "rewrite_ttl": 1 }
 
-			{
-				"domain_suffix": [
-					"icloudnative.io",
-					"fuckcloudnative.io",
-					"sealos.io",
-					"cdn.jsdelivr.net"
-				],
-				"server": "dns_direct"
-			}
+    ],
+    "final": "dns_direct",
+    "strategy": "prefer_ipv4",
+    "independent_cache": true,
+    "reverse_mapping": true,
+    "fakeip": { "enabled": true, "inet4_range": "198.18.0.0/15", "inet6_range": "fc00::/18" }
+  },
+  "inbounds": [
+    { "tag": "mixed-in", "type": "mixed", "listen": "::", "listen_port": 7890, "sniff": false ,"set_system_proxy": false},
+    { "tag": "dns_in", "type": "direct", "listen": "::", "listen_port": 1053 },
+    { "tag": "redirect-in", "type": "redirect", "listen": "::", "listen_port": 7892, "sniff": true, "sniff_override_destination": true },
+    { "tag": "tun-in", "type": "tun", "inet4_address": "172.19.0.1/30", "inet6_address": "fdfe:dcba:9876::1/126", "mtu": 9000, "auto_route": true, "strict_route": true, "stack": "mixed", "sniff": true, "sniff_override_destination": true }
+  ],
+        "outbounds": [
 
-		],
-		"final": "dns_proxy"
-	},
-	"ntp": {
-		"enabled": true,
-		"server": "time.apple.com",
-		"server_port": 123,
-		"interval": "30m0s",
-		"detour": "direct"
-	},
-	"inbounds": [
+                {
+                        "tag": "亚太地区",
+                        "type": "selector",
+                        "outbounds": [
+                                "include: (?i)港|台|新加|日|美|韩|泰",
+                                "其他地区"
+                                
+                                        
 
-		{
-			"tag": "tun-in",
-			"type": "tun",
-			"inet4_address": "172.19.0.1/30",
-			"inet6_address": "fdfe:dcba:9876::1/126",
-			"auto_route": true,
-			"strict_route": true,
-			"stack": "system",
-			"mtu": 9000,
-			"sniff": true
-		}
-	],
-	"outbounds": [
+                        ]
+                },
+                {
+                        "tag": "其他地区",
+                        "type": "selector",
+                        "outbounds": [
 
-		{
-			"tag": "亚太地区",
-			"type": "selector",
-			"outbounds": [
-				"include: (?i)港|台|新加|日|美|韩|泰"
-				
-					
+                                "exclude: (?i)港|台|新加|日|美|移动|联通|电信|韩|泰|最新|回国|以下"
 
-			]
-		},
-		{
-			"tag": "其他地区",
-			"type": "selector",
-			"outbounds": [
+                        ]
+                },
 
-				"exclude: (?i)港|台|新加|日|美|移动|联通|电信|韩|泰|最新|回国|以下"
+                {
+                        "tag": "国内",
+                        "type": "selector",
+                        "outbounds": [
+                                "direct",
+                                "include: (?i)移动|联通|电信"
 
-			]
-		},
+                        ]
+                }
 
-		{
-			"tag": "国内",
-			"type": "selector",
-			"outbounds": [
-				"direct",
-				"include: (?i)移动|联通|电信"
-
-			]
-		}
-
-	],
-	"route": {
-		"rules": [{
-				"protocol": "dns",
-				"outbound": "dns-out"
-			},
-			{
-				"clash_mode": "direct",
-				"outbound": "direct"
-			},
-			{
-				"clash_mode": "global",
-				"outbound": "亚太地区"
-			},
-			{
-				"protocol": "quic",
-				"outbound": "block"
-			},
-			{
-				"inbound": "socks-in",
-				"outbound": "亚太地区"
-			},
-			{
-				"rule_set": "geosite-category-ads-all",
-				"outbound": "block"
-			},
-			{
-				"rule_set": "geoip-cn",
-				"outbound": "国内"
-			},
-			{
-				"ip_is_private": true,
-				"ip_cidr": \ "${my_ip}\",
-				"outbound": "direct"
-			}
-		],
-		"rule_set": [{
-				"tag": "geoip-cn",
-				"type": "remote",
-				"format": "binary",
-				"url": "https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
-				"download_detour": "亚太地区"
-			},
-			{
-				"tag": "geosite-cn",
-				"type": "remote",
-				"format": "binary",
-				"url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-cn.srs",
-				"download_detour": "亚太地区"
-			},
-			{
-				"tag": "geosite-private",
-				"type": "remote",
-				"format": "binary",
-				"url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-private.srs",
-				"download_detour": "亚太地区"
-			},
-			{
-				"tag": "geosite-category-ads-all",
-				"type": "remote",
-				"format": "binary",
-				"url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
-				"download_detour": "亚太地区"
-			}
-		],
-		"final": "亚太地区",
-		"find_process": true,
-		"auto_detect_interface": true
-	},
-	"experimental": {
-		"cache_file": {
-			"enabled": true
-		},
-		"clash_api": {
-			"external_controller": "0.0.0.0:9090",
-			"external_ui": "metacubexd",
-			"external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-			"external_ui_download_detour": "亚太地区",
-			"default_mode": "rule"
-		}
-	}
+        ],
+ "route": {
+    "rules": [
+       { "protocol": [ "dns" ], "outbound": "dns-out" },
+      { "clash_mode": "Global", "outbound": "亚太地区" },
+      { "clash_mode": "Direct", "outbound": "direct" },
+      { "rule_set": [ "ads" ], "outbound": "block" },
+      { "rule_set": [ "private" ], "outbound": "国内" },
+      { "rule_set": [ "microsoft-cn" ], "outbound": "国内" },
+      { "rule_set": [ "apple-cn" ], "outbound": "国内" },
+      { "rule_set": [ "google-cn" ], "outbound": "亚太地区" },
+      { "rule_set": [ "games-cn" ], "outbound": "亚太地区" },
+      { "rule_set": [ "networktest" ], "outbound": "亚太地区" },
+      { "rule_set": [ "applications" ], "outbound": "国内" },
+      { "rule_set": [ "proxy"], "outbound": "亚太地区" },
+      { "domain_suffix": [ "ipleak.net","surfsharkdns.com"], "outbound": "亚太地区" },
+      { "rule_set": [ "cn" ], "outbound": "国内" },
+      { "rule_set": [ "telegramip" ], "outbound": "亚太地区" },
+      { "rule_set": [ "privateip" ], "outbound": "国内" },
+      { "rule_set": [ "cnip" ], "outbound": "国内"}
+    ],
+    "rule_set": [
+      {
+        "tag": "ads",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@sing-box-ruleset/ads.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "private",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@sing-box-ruleset/private.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "microsoft-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@sing-box-ruleset/microsoft-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "apple-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@sing-box-ruleset/apple-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "google-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@sing-box-ruleset/google-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "games-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@sing-box-ruleset/games-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "networktest",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@sing-box-ruleset/networktest.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "applications",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@sing-box-ruleset/applications.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "proxy",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@sing-box-ruleset/proxy.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@sing-box-ruleset/cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "telegramip",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@sing-box-ruleset/telegramip.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "privateip",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@sing-box-ruleset/privateip.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "cnip",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@sing-box-ruleset/cnip.srs",
+        "download_detour": "direct"
+      }
+    ],
+    "final": "亚太地区",
+    "auto_detect_interface": true,
+    "override_android_vpn": true
+  },
+  "experimental": {
+    "cache_file": { "enabled": true, "cache_id": "", "store_fakeip": true },
+    "clash_api": {
+      "external_controller": "127.0.0.1:9090",
+      "external_ui": "ui",
+      "external_ui_download_url": "https://mirror.ghproxy.com/https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "direct",
+      "secret": "",
+      "default_mode": "Rule"
+    }
+  }
 }
 EOF
 echo "$file_path1"
