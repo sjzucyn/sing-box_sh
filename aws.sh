@@ -880,21 +880,7 @@ server {
     }
 
 }  
-server {
-    
-    listen 10010 ssl;
-    
-      ssl_certificate /root/ygkkkca/cert.crt;
-    ssl_certificate_key /root/ygkkkca/private.key;
-
-
-      location / {
-    proxy_pass  http://localhost:8080; # 转发规则
-    proxy_set_header Host $proxy_host; # 修改转发请求头，让8080端口的应用可以受到真实的请求
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    }
-}  }
+ }
 #        # See sample authentication script at:
 #        # http://wiki.nginx.org/ImapAuthenticateWithApachePhpScript
 # 
